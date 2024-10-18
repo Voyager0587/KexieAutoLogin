@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-// 基础 URL，例如你的服务器地址
+// 基础 URL
 const BASE_URL = 'https://at.kexie.space'; // 将此替换为真实的服务器地址
 
 /**
@@ -15,10 +15,10 @@ async function signIn(studentId) {
         });
 
         if (response.data.code === 0) {
-            console.log('签到成功:', response.data.msg);
+            console.log('签到结果:', response.data.msg);
             return true;
         } else if (response.data.code === -201) {
-            console.log('不许重复签到:', response.data.msg);
+            console.log('签到结果:', response.data.msg);
             return true;  // 如果重复签到，表示已经签到了，返回true
         } else {
             console.error('签到失败:', response.data.msg);
