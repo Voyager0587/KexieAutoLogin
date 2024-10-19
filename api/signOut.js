@@ -21,7 +21,7 @@ async function signOut(studentId) {
                 accumulatedTime: response.data.data.accumulatedTime // 返回签退时的累计时长
             };
         } else if (response.data.code === -202) {
-            console.error('签退失败: 没有签到过', response.data.msg);
+            console.error('没签到还想签退？宁没有签到噢！', response.data.msg);
             return { success: false };
         } else {
             console.error('签退失败:', response.data.msg);
