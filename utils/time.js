@@ -29,6 +29,63 @@ function getCurrentTime() {
     return `${year}-${month}-${day} ${hour}:${minute}`;
 }
 
+
+
+/**
+ * 获取当前周的开始日期和结束日期
+ * @returns {Object} 包含本周开始日期和结束日期的对象
+ */
+function getCurrentWeekRange() {
+    const today = new Date();
+    const firstDayOfWeek = today.getDate() - today.getDay() + 1; // 周一
+    const lastDayOfWeek = firstDayOfWeek + 6; // 周日
+
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(firstDayOfWeek);
+    const endOfWeek = new Date(today);
+    endOfWeek.setDate(lastDayOfWeek);
+
+    return {
+        start: formatDate(startOfWeek),
+        end: formatDate(endOfWeek)
+    };
+}
+
+/**
+ * 获取上一周的开始日期和结束日期
+ * @returns {Object} 包含上一周开始日期和结束日期的对象
+ */
+function getLastWeekRange() {
+    const today = new Date();
+    const firstDayOfLastWeek = today.getDate() - today.getDay() - 6; // 上一周周一
+    const lastDayOfLastWeek = firstDayOfLastWeek + 6; // 上一周周日
+
+    const startOfLastWeek = new Date(today);
+    startOfLastWeek.setDate(firstDayOfLastWeek);
+    const endOfLastWeek = new Date(today);
+    endOfLastWeek.setDate(lastDayOfLastWeek);
+
+    return {
+        start: formatDate(startOfLastWeek),
+        end: formatDate(endOfLastWeek)
+    };
+}
+
+
+/**
+ * 格式化日期为 YYYY-MM-DD 格式
+ * @param {Date} date - 日期对象
+ * @returns {string} 格式化后的日期字符串
+ */
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 module.exports = {
+    getCurrentWeekRange,
+    getLastWeekRange,
     getCurrentTime
 };

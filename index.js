@@ -3,6 +3,13 @@ const signIn = require('./api/signIn');
 const signOut = require('./api/signOut');
 const { getCurrentTime } = require('./utils/time');
 const { delay } = require('./utils/delay');
+const { getSignInDuration } = require('./api/signInRecord'); // 获取签到时长
+const { getUsersSignInDurations } = require('./utils/users'); // 获取多个用户时长
+const { getCurrentWeekRange,getLastWeekRange } = require('./utils/time');
+
+// 获取本周和上一周的日期范围
+const currentWeek = getCurrentWeekRange();
+const lastWeek = getLastWeekRange();
 
 let totalSignInTime = 0; // 用于记录累计签到的时长
 
@@ -43,14 +50,53 @@ async function startAutoSignInOut(studentId) {
     }
 }
 
-// 创建命令行接口，让用户输入学号
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+/**
+ * 选择功能：启动签到签退、获取某个人的签到时长等
+ */
+async function startProgram() {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
 
-// 主程序入口
-rl.question('请输入学号: ', async (studentId) => {
-    await startAutoSignInOut(studentId);
-    rl.close();
-});
+    // 菜单系统
+    console.log('请选择一个功能：');
+    console.log('1. 自动签到签退');
+    console.log('2. 获取某个人的签到时长');
+    console.log('3. 获取默认用户的签到时长');
+    console.log('4. 退出程序');
+
+    rl.question('请输入对应的选项（数字1-4）: ', async (option) => {
+        switch (option) {
+            case '1':
+                rl.question('请输入学号: ', async (studentId) => {
+                    await startAutoSignInOut(studentId);
+                    rl.close();
+                });
+                break;
+            case '2':
+                rl.question('请输入学号: ', async (studentId) => {
+                    const result = await getSignInDuration(studentId,{ currentWeek, lastWeek });
+                    console.log(`用户 ${userId} ${result.userName} 本周签到总时长: ${result.currentWeekTotal} 小时`);
+                    console.log(`用户 ${userId} ${result.userName} 上一周签到总时长: ${result.lastWeekTotal} 小时`);
+                    rl.close();
+                });
+                break;
+            case '3':
+                await getUsersSignInDurations(); // 获取默认用户的签到时长
+                rl.close();
+                break;
+            case '4':
+                console.log('退出程序');
+                rl.close();
+                break;
+            default:
+                console.log('无效的选项，请重新选择');
+                rl.close();
+                startProgram(); // 重新显示菜单
+        }
+    });
+}
+
+// 启动程序
+startProgram();
